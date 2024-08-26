@@ -3,19 +3,18 @@ import pickle
 import pandas as pd
 import requests
 
-# Load data
 movies_dict = pickle.load(open('movie.pkl', 'rb'))
 movies = pd.DataFrame(movies_dict)
 similarity = pickle.load(open('similarity.pkl', 'rb'))
 
-# Page title and description
+
 st.title('🎬 Movie Recommender System')
 st.markdown("""
 This page recommends similar movies based on the selected movie. Find your next favorite film!
 """)
 
 
-# Function to fetch movie poster
+
 def fetch_poster(movie_id):
     response = requests.get(
         'https://api.themoviedb.org/3/movie/{}?api_key=6e0b31b10c8cadb6108e19e2605b4e8b&language=en-US'.format(movie_id), timeout=15)
@@ -23,7 +22,7 @@ def fetch_poster(movie_id):
     return "https://image.tmdb.org/t/p/w500/" + data['poster_path']
 
 
-# Function to recommend similar movies
+
 def recommend(movie):
     movie_index = movies[movies['title'] == movie].index[0]
     distances = similarity[movie_index]
@@ -39,15 +38,14 @@ def recommend(movie):
     return recommend_movies, recommended_movies_posters
 
 
-# Selectbox for movie selection
+
 selected_movie_name = st.selectbox('Select a movie:', movies['title'].values)
 
-# Button to trigger recommendation
 if st.button('Recommend'):
     names, posters = recommend(selected_movie_name)
     st.subheader('🌟 Recommended Movies:')
 
-    # Display recommended movies and posters in a grid layout
+
     col1, col2, col3, col4, col5 = st.columns(5)
     cols = [col1, col2, col3, col4, col5]
     for i in range(5):
